@@ -1,20 +1,23 @@
 import './App.css';
 import GoogleLogin from 'react-google-login';
-import axios from 'axios'
+
+const uri = 'http://localhost:5000/api/googlelogin'
 
 function App() {
+  const responseGoogle = async (respSuccess) => {
+    try {
+      const dataFromServer = await fetch(uri, {
+        method: 'POST',
+        body: new URLSearchParams({
+          'idToken': `${respSuccess.tokenId}`
+        })
+      })
+      const finalData = await dataFromServer.json()
+      console.log('data Server', finalData);
 
-  const responseGoogle = (respSuccess) => {
-    console.log(respSuccess);
-    axios({
-      method: 'POST',
-      url: 'http://locahost:5000/api/googleLogin',
-      data: {
-        tokenId: respSuccess.tokenId,
-      }
-    }).then((res) => {
-      console.log('Response from server', res);
-    })
+    } catch (error) {
+      console.log('error en catch', error);
+    }
   }
 
   const responseFailureGoogle = (respFailure) => {
@@ -35,7 +38,7 @@ function App() {
         cookiePolicy={'single_host_origin'}
       />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
